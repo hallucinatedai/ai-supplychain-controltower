@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from controltower.agents.base import BaseAgent
@@ -74,7 +74,7 @@ class EscalationAgent(BaseAgent):
                 recommended_action="Contact carrier for updated ETA",
             )
 
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         overdue = now - shipment.estimated_arrival
         overdue_hours = overdue.total_seconds() / 3600
 
@@ -117,7 +117,7 @@ class EscalationAgent(BaseAgent):
         if alert.status not in (AlertStatus.OPEN, AlertStatus.ACKNOWLEDGED):
             return None
 
-        age = datetime.utcnow() - alert.created_at
+        age = datetime.now(UTC) - alert.created_at
         if age > timedelta(hours=stale_hours):
             return Recommendation(
                 agent=self.name,

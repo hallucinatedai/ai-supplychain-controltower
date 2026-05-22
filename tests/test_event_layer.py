@@ -1,6 +1,5 @@
 """Tests for the event processing layer."""
 
-import tempfile
 from pathlib import Path
 
 from controltower.data_store import DataStore

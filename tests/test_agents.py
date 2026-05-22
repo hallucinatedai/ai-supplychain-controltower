@@ -1,6 +1,6 @@
 """Tests for all supply chain intelligence agents."""
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from controltower.agents.escalation import EscalationAgent
 from controltower.agents.forecasting import ForecastingAgent
@@ -254,7 +254,7 @@ class TestEscalationAgent:
         s = Shipment(
             origin="A", destination="B",
             status=ShipmentStatus.DELAYED,
-            estimated_arrival=datetime.utcnow() - timedelta(hours=50),
+            estimated_arrival=datetime.now(UTC) - timedelta(hours=50),
         )
         alert = self.agent.check_shipment_escalation(s)
         assert alert is not None
@@ -264,7 +264,7 @@ class TestEscalationAgent:
         old_alert = Alert(
             title="Test alert",
             status=AlertStatus.OPEN,
-            created_at=datetime.utcnow() - timedelta(hours=30),
+            created_at=datetime.now(UTC) - timedelta(hours=30),
         )
         rec = self.agent.check_stale_alert(old_alert)
         assert rec is not None
@@ -274,7 +274,7 @@ class TestEscalationAgent:
         fresh = Alert(
             title="Test alert",
             status=AlertStatus.OPEN,
-            created_at=datetime.utcnow(),
+            created_at=datetime.now(UTC),
         )
         rec = self.agent.check_stale_alert(fresh)
         assert rec is None
@@ -284,7 +284,7 @@ class TestEscalationAgent:
             Shipment(
                 origin="A", destination="B",
                 status=ShipmentStatus.DELAYED,
-                estimated_arrival=datetime.utcnow() - timedelta(hours=30),
+                estimated_arrival=datetime.now(UTC) - timedelta(hours=30),
             ),
         ]
         context = {"shipments": shipments, "alerts": []}

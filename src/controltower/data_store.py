@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
-from datetime import datetime
-from pathlib import Path
+from datetime import UTC, datetime
 from typing import Any
 
 from controltower.models import (
@@ -181,8 +180,8 @@ class DataStore:
             actual_arrival=_str_to_dt(row["actual_arrival"]),
             route_id=row["route_id"],
             risk_score=row["risk_score"] or 0.0,
-            created_at=_str_to_dt(row["created_at"]) or datetime.utcnow(),
-            updated_at=_str_to_dt(row["updated_at"]) or datetime.utcnow(),
+            created_at=_str_to_dt(row["created_at"]) or datetime.now(UTC),
+            updated_at=_str_to_dt(row["updated_at"]) or datetime.now(UTC),
             metadata=json.loads(row["metadata"] or "{}"),
         )
 
@@ -236,8 +235,8 @@ class DataStore:
             reorder_qty=row["reorder_qty"] or 0,
             unit_cost=row["unit_cost"] or 0.0,
             last_replenished=_str_to_dt(row["last_replenished"]),
-            created_at=_str_to_dt(row["created_at"]) or datetime.utcnow(),
-            updated_at=_str_to_dt(row["updated_at"]) or datetime.utcnow(),
+            created_at=_str_to_dt(row["created_at"]) or datetime.now(UTC),
+            updated_at=_str_to_dt(row["updated_at"]) or datetime.now(UTC),
             metadata=json.loads(row["metadata"] or "{}"),
         )
 
@@ -291,7 +290,7 @@ class DataStore:
             cost=row["cost"] or 0.0,
             risk_score=row["risk_score"] or 0.0,
             is_active=bool(row["is_active"]),
-            created_at=_str_to_dt(row["created_at"]) or datetime.utcnow(),
+            created_at=_str_to_dt(row["created_at"]) or datetime.now(UTC),
             metadata=json.loads(row["metadata"] or "{}"),
         )
 
@@ -345,7 +344,7 @@ class DataStore:
             source_agent=row["source_agent"] or "",
             related_entity_id=row["related_entity_id"],
             recommended_action=row["recommended_action"] or "",
-            created_at=_str_to_dt(row["created_at"]) or datetime.utcnow(),
+            created_at=_str_to_dt(row["created_at"]) or datetime.now(UTC),
             resolved_at=_str_to_dt(row["resolved_at"]),
             metadata=json.loads(row["metadata"] or "{}"),
         )
@@ -388,6 +387,6 @@ class DataStore:
             horizon_days=row["horizon_days"] or 7,
             values=json.loads(row["values_json"] or "[]"),
             confidence=row["confidence"] or 0.0,
-            generated_at=_str_to_dt(row["generated_at"]) or datetime.utcnow(),
+            generated_at=_str_to_dt(row["generated_at"]) or datetime.now(UTC),
             metadata=json.loads(row["metadata"] or "{}"),
         )

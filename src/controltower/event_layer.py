@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Callable
-from datetime import datetime
-from typing import Any
+from datetime import UTC, datetime
 
 from controltower.data_store import DataStore
 from controltower.models import (
@@ -91,7 +90,7 @@ def _handle_shipment_update(event: OperationalEvent, store: DataStore) -> None:
         shipment.actual_arrival = datetime.fromisoformat(payload["actual_arrival"])
     if "risk_score" in payload:
         shipment.risk_score = float(payload["risk_score"])
-    shipment.updated_at = datetime.utcnow()
+    shipment.updated_at = datetime.now(UTC)
     store.upsert_shipment(shipment)
 
 
@@ -123,7 +122,7 @@ def _handle_inventory_update(event: OperationalEvent, store: DataStore) -> None:
             inv.quantity = int(event.payload["quantity"])
         if "warehouse" in event.payload:
             inv.warehouse = event.payload["warehouse"]
-    inv.updated_at = datetime.utcnow()
+    inv.updated_at = datetime.now(UTC)
     store.upsert_inventory(inv)
 
 
@@ -137,5 +136,5 @@ def _handle_delay_reported(event: OperationalEvent, store: DataStore) -> None:
         shipment.estimated_arrival = datetime.fromisoformat(
             event.payload["estimated_arrival"]
         )
-    shipment.updated_at = datetime.utcnow()
+    shipment.updated_at = datetime.now(UTC)
     store.upsert_shipment(shipment)
