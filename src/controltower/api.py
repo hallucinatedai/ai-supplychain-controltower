@@ -6,7 +6,7 @@ import os
 from contextlib import asynccontextmanager
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import Body, FastAPI, HTTPException, Query
 
 from controltower.agents import (
     EscalationAgent,
@@ -204,8 +204,8 @@ async def list_forecasts(
 
 @app.post("/forecasts/generate", response_model=Forecast)
 async def generate_forecast(
-    historical_demand: list[float],
-    horizon: int = Query(default=7, ge=1, le=90),
+    historical_demand: list[float] = Body(...),
+    horizon: int = Body(default=7, ge=1, le=90),
 ) -> Forecast:
     agent = ForecastingAgent()
     return agent.forecast_demand(historical_demand, horizon=horizon)

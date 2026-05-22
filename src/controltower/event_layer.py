@@ -22,6 +22,8 @@ EventHandler = Callable[[OperationalEvent, DataStore], None]
 class EventLayer:
     """Processes operational events and dispatches them to handlers."""
 
+    MAX_EVENT_LOG_SIZE = 10_000
+
     def __init__(self, store: DataStore) -> None:
         self._store = store
         self._handlers: dict[str, list[EventHandler]] = {}
@@ -35,28 +37,33 @@ class EventLayer:
 
     # -- dispatching ---------------------------------------------------------
 
-    def process(self, event: OperationalEvent) -> None:
-        """Process a single operational event."""
+    def process(self, event: OperationalEvent) -> bool:
+        """Process a single operational event. Returns True if at least one handler succeeded."""
         self._event_log.append(event)
+        if len(self._event_log) > self.MAX_EVENT_LOG_SIZE:
+            self._event_log = self._event_log[-self.MAX_EVENT_LOG_SIZE:]
         handlers = self._handlers.get(event.event_type, [])
         if not handlers:
             logger.warning("No handlers for event type: %s", event.event_type)
-            return
+            return True
+        any_succeeded = False
         for handler in handlers:
             try:
                 handler(event, self._store)
+                any_succeeded = True
             except Exception:
                 logger.exception(
                     "Handler failed for event %s", event.event_type
                 )
+        return any_succeeded
 
     def process_batch(self, events: list[OperationalEvent]) -> int:
         """Process multiple events. Returns the count of successfully processed events."""
         processed = 0
         for event in events:
             try:
-                self.process(event)
-                processed += 1
+                if self.process(event):
+                    processed += 1
             except Exception:
                 logger.exception("Failed to process event %s", event.event_type)
         return processed
