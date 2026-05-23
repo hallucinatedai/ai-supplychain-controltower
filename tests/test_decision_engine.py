@@ -9,17 +9,20 @@ from controltower.models import Inventory, Recommendation, Shipment, ShipmentSta
 
 class TestDecisionEngine:
     def setup_method(self) -> None:
-        self.engine = DecisionEngine([
-            ForecastingAgent(),
-            RiskAgent(),
-            InventoryAgent(),
-        ])
+        self.engine = DecisionEngine(
+            [
+                ForecastingAgent(),
+                RiskAgent(),
+                InventoryAgent(),
+            ]
+        )
 
     def test_registered_agents(self) -> None:
         assert len(self.engine.agents) == 3
 
     def test_register_agent(self) -> None:
         from controltower.agents.route import RouteAgent
+
         self.engine.register_agent(RouteAgent())
         assert len(self.engine.agents) == 4
 
@@ -35,7 +38,8 @@ class TestDecisionEngine:
         context = {
             "shipments": [
                 Shipment(
-                    origin="A", destination="B",
+                    origin="A",
+                    destination="B",
                     status=ShipmentStatus.DELAYED,
                     carrier="slow",
                     route_id="risky",
@@ -51,8 +55,11 @@ class TestDecisionEngine:
         context = {
             "inventory": [
                 Inventory(
-                    sku="SKU-A", warehouse="W1",
-                    quantity=2, reorder_point=10, reorder_qty=50,
+                    sku="SKU-A",
+                    warehouse="W1",
+                    quantity=2,
+                    reorder_point=10,
+                    reorder_qty=50,
                 ),
             ],
         }
@@ -71,8 +78,7 @@ class TestDecisionEngine:
 
     def test_prioritize_limit(self) -> None:
         recs = [
-            Recommendation(agent="a", priority=i, title=f"R{i}", confidence=0.5)
-            for i in range(10)
+            Recommendation(agent="a", priority=i, title=f"R{i}", confidence=0.5) for i in range(10)
         ]
         limited = self.engine.prioritize(recs, limit=3)
         assert len(limited) == 3

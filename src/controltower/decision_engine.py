@@ -24,9 +24,7 @@ class DecisionEngine:
     def agents(self) -> list[BaseAgent]:
         return list(self._agents)
 
-    def gather_recommendations(
-        self, context: dict[str, Any]
-    ) -> list[Recommendation]:
+    def gather_recommendations(self, context: dict[str, Any]) -> list[Recommendation]:
         """Run all agents and collect recommendations."""
         all_recs: list[Recommendation] = []
         for agent in self._agents:

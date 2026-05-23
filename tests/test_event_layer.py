@@ -46,9 +46,7 @@ class TestEventLayer:
         layer = EventLayer(store)
 
         # seed a shipment
-        store.upsert_shipment(
-            Shipment(id="ship-002", origin="A", destination="B")
-        )
+        store.upsert_shipment(Shipment(id="ship-002", origin="A", destination="B"))
 
         event = OperationalEvent(
             event_type="shipment_update",
@@ -66,9 +64,7 @@ class TestEventLayer:
         store = _make_store(str(tmp_path))
         layer = EventLayer(store)
 
-        store.upsert_shipment(
-            Shipment(id="ship-003", origin="A", destination="B")
-        )
+        store.upsert_shipment(Shipment(id="ship-003", origin="A", destination="B"))
 
         event = OperationalEvent(
             event_type="delay_reported",

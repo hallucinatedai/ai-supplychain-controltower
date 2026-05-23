@@ -41,7 +41,7 @@ class EventLayer:
         """Process a single operational event. Returns True if at least one handler succeeded."""
         self._event_log.append(event)
         if len(self._event_log) > self.MAX_EVENT_LOG_SIZE:
-            self._event_log = self._event_log[-self.MAX_EVENT_LOG_SIZE:]
+            self._event_log = self._event_log[-self.MAX_EVENT_LOG_SIZE :]
         handlers = self._handlers.get(event.event_type, [])
         if not handlers:
             logger.warning("No handlers for event type: %s", event.event_type)
@@ -52,9 +52,7 @@ class EventLayer:
                 handler(event, self._store)
                 any_succeeded = True
             except Exception:
-                logger.exception(
-                    "Handler failed for event %s", event.event_type
-                )
+                logger.exception("Handler failed for event %s", event.event_type)
         return any_succeeded
 
     def process_batch(self, events: list[OperationalEvent]) -> int:
@@ -84,6 +82,7 @@ class EventLayer:
 # ---------------------------------------------------------------------------
 # Default handler implementations
 # ---------------------------------------------------------------------------
+
 
 def _handle_shipment_update(event: OperationalEvent, store: DataStore) -> None:
     shipment = store.get_shipment(event.entity_id)
@@ -140,8 +139,6 @@ def _handle_delay_reported(event: OperationalEvent, store: DataStore) -> None:
         return
     shipment.status = ShipmentStatus.DELAYED
     if "estimated_arrival" in event.payload:
-        shipment.estimated_arrival = datetime.fromisoformat(
-            event.payload["estimated_arrival"]
-        )
+        shipment.estimated_arrival = datetime.fromisoformat(event.payload["estimated_arrival"])
     shipment.updated_at = datetime.now(UTC)
     store.upsert_shipment(shipment)

@@ -63,13 +63,15 @@ async def lifespan(app: FastAPI):  # type: ignore[no-untyped-def]
     _store = DataStore(db_path)
     _store.connect()
 
-    _engine = DecisionEngine([
-        ForecastingAgent(),
-        RiskAgent(),
-        RouteAgent(),
-        InventoryAgent(),
-        EscalationAgent(),
-    ])
+    _engine = DecisionEngine(
+        [
+            ForecastingAgent(),
+            RiskAgent(),
+            RouteAgent(),
+            InventoryAgent(),
+            EscalationAgent(),
+        ]
+    )
 
     _event_layer = EventLayer(_store)
     yield
@@ -87,6 +89,7 @@ app = FastAPI(
 # Health
 # ---------------------------------------------------------------------------
 
+
 @app.get("/health", response_model=HealthResponse)
 async def health() -> HealthResponse:
     return HealthResponse()
@@ -100,6 +103,7 @@ async def agent_health() -> dict[str, bool]:
 # ---------------------------------------------------------------------------
 # Shipments
 # ---------------------------------------------------------------------------
+
 
 @app.post("/shipments", response_model=Shipment, status_code=201)
 async def create_shipment(shipment: Shipment) -> Shipment:
@@ -125,6 +129,7 @@ async def get_shipment(shipment_id: str) -> Shipment:
 # Inventory
 # ---------------------------------------------------------------------------
 
+
 @app.post("/inventory", response_model=Inventory, status_code=201)
 async def create_inventory(item: Inventory) -> Inventory:
     return _get_store().upsert_inventory(item)
@@ -148,6 +153,7 @@ async def get_inventory(item_id: str) -> Inventory:
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
+
 
 @app.post("/routes", response_model=Route, status_code=201)
 async def create_route(route: Route) -> Route:
@@ -173,6 +179,7 @@ async def get_route(route_id: str) -> Route:
 # Alerts
 # ---------------------------------------------------------------------------
 
+
 @app.post("/alerts", response_model=Alert, status_code=201)
 async def create_alert(alert: Alert) -> Alert:
     return _get_store().upsert_alert(alert)
@@ -189,6 +196,7 @@ async def list_alerts(
 # ---------------------------------------------------------------------------
 # Forecasts
 # ---------------------------------------------------------------------------
+
 
 @app.post("/forecasts", response_model=Forecast, status_code=201)
 async def create_forecast(forecast: Forecast) -> Forecast:
@@ -215,6 +223,7 @@ async def generate_forecast(
 # Events
 # ---------------------------------------------------------------------------
 
+
 @app.post("/events", status_code=202)
 async def ingest_event(event: OperationalEvent) -> dict[str, str]:
     _get_event_layer().process(event)
@@ -230,6 +239,7 @@ async def ingest_events(events: list[OperationalEvent]) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 # Decision engine
 # ---------------------------------------------------------------------------
+
 
 @app.post("/decide", response_model=list[Recommendation])
 async def decide(context: dict[str, Any]) -> list[Recommendation]:

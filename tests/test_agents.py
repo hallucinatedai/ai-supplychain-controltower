@@ -21,6 +21,7 @@ from controltower.models import (
 # ForecastingAgent
 # ---------------------------------------------------------------------------
 
+
 class TestForecastingAgent:
     def setup_method(self) -> None:
         self.agent = ForecastingAgent()
@@ -71,6 +72,7 @@ class TestForecastingAgent:
 # RiskAgent
 # ---------------------------------------------------------------------------
 
+
 class TestRiskAgent:
     def setup_method(self) -> None:
         self.agent = RiskAgent()
@@ -90,7 +92,8 @@ class TestRiskAgent:
 
     def test_score_heavy_shipment(self) -> None:
         s = Shipment(
-            origin="A", destination="B",
+            origin="A",
+            destination="B",
             status=ShipmentStatus.IN_TRANSIT,
             weight_kg=15_000,
         )
@@ -106,7 +109,8 @@ class TestRiskAgent:
     def test_analyze_high_risk(self) -> None:
         shipments = [
             Shipment(
-                origin="A", destination="B",
+                origin="A",
+                destination="B",
                 status=ShipmentStatus.DELAYED,
                 carrier="slow_carrier",
                 route_id="risky_route",
@@ -125,6 +129,7 @@ class TestRiskAgent:
 # RouteAgent
 # ---------------------------------------------------------------------------
 
+
 class TestRouteAgent:
     def setup_method(self) -> None:
         self.agent = RouteAgent()
@@ -135,16 +140,28 @@ class TestRouteAgent:
     def test_recommend_route(self) -> None:
         routes = [
             Route(
-                id="r1", origin="A", destination="B",
-                cost=100, estimated_hours=10, risk_score=0.1,
+                id="r1",
+                origin="A",
+                destination="B",
+                cost=100,
+                estimated_hours=10,
+                risk_score=0.1,
             ),
             Route(
-                id="r2", origin="A", destination="B",
-                cost=200, estimated_hours=5, risk_score=0.3,
+                id="r2",
+                origin="A",
+                destination="B",
+                cost=200,
+                estimated_hours=5,
+                risk_score=0.3,
             ),
             Route(
-                id="r3", origin="A", destination="B",
-                cost=50, estimated_hours=20, risk_score=0.8,
+                id="r3",
+                origin="A",
+                destination="B",
+                cost=50,
+                estimated_hours=20,
+                risk_score=0.8,
             ),
         ]
         best = self.agent.recommend_route(routes, "A", "B")
@@ -152,22 +169,36 @@ class TestRouteAgent:
         assert best.id in ("r1", "r2")
 
     def test_recommend_route_no_match(self) -> None:
-        routes = [Route(
-            id="r1", origin="X", destination="Y",
-            cost=100, estimated_hours=5, risk_score=0.1,
-        )]
+        routes = [
+            Route(
+                id="r1",
+                origin="X",
+                destination="Y",
+                cost=100,
+                estimated_hours=5,
+                risk_score=0.1,
+            )
+        ]
         best = self.agent.recommend_route(routes, "A", "B")
         assert best is None
 
     def test_rank_routes(self) -> None:
         routes = [
             Route(
-                id="r1", origin="A", destination="B",
-                cost=200, estimated_hours=10, risk_score=0.5,
+                id="r1",
+                origin="A",
+                destination="B",
+                cost=200,
+                estimated_hours=10,
+                risk_score=0.5,
             ),
             Route(
-                id="r2", origin="A", destination="B",
-                cost=50, estimated_hours=5, risk_score=0.1,
+                id="r2",
+                origin="A",
+                destination="B",
+                cost=50,
+                estimated_hours=5,
+                risk_score=0.1,
             ),
         ]
         ranked = self.agent.rank_routes(routes)
@@ -176,8 +207,12 @@ class TestRouteAgent:
     def test_analyze_with_context(self) -> None:
         routes = [
             Route(
-                id="r1", origin="A", destination="B",
-                cost=100, estimated_hours=5, risk_score=0.2,
+                id="r1",
+                origin="A",
+                destination="B",
+                cost=100,
+                estimated_hours=5,
+                risk_score=0.2,
             ),
         ]
         context = {"routes": routes, "origin": "A", "destination": "B"}
@@ -187,8 +222,12 @@ class TestRouteAgent:
     def test_analyze_high_risk_route(self) -> None:
         routes = [
             Route(
-                id="r1", origin="A", destination="B",
-                cost=100, estimated_hours=5, risk_score=0.9,
+                id="r1",
+                origin="A",
+                destination="B",
+                cost=100,
+                estimated_hours=5,
+                risk_score=0.9,
             ),
         ]
         context = {"routes": routes}
@@ -199,6 +238,7 @@ class TestRouteAgent:
 # ---------------------------------------------------------------------------
 # InventoryAgent
 # ---------------------------------------------------------------------------
+
 
 class TestInventoryAgent:
     def setup_method(self) -> None:
@@ -255,6 +295,7 @@ class TestInventoryAgent:
 # EscalationAgent
 # ---------------------------------------------------------------------------
 
+
 class TestEscalationAgent:
     def setup_method(self) -> None:
         self.agent = EscalationAgent()
@@ -275,7 +316,8 @@ class TestEscalationAgent:
 
     def test_critical_escalation(self) -> None:
         s = Shipment(
-            origin="A", destination="B",
+            origin="A",
+            destination="B",
             status=ShipmentStatus.DELAYED,
             estimated_arrival=datetime.now(UTC) - timedelta(hours=50),
         )
@@ -305,7 +347,8 @@ class TestEscalationAgent:
     def test_analyze(self) -> None:
         shipments = [
             Shipment(
-                origin="A", destination="B",
+                origin="A",
+                destination="B",
                 status=ShipmentStatus.DELAYED,
                 estimated_arrival=datetime.now(UTC) - timedelta(hours=30),
             ),

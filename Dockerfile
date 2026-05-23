@@ -1,5 +1,5 @@
 # ---------- build stage ----------
-FROM python:3.11.9-alpine3.20@sha256:43547ccd3cafdff532797cb4927e5e2b1b4fdb1204bfb0b06ae4e488cceb5ce5 AS builder
+FROM python:3.11-alpine3.21@sha256:cc89153ee2e125296614f6a032cb473e2bc2c0203cbe2305c917ece8866e5b01 AS builder
 
 WORKDIR /build
 
@@ -9,7 +9,7 @@ COPY src/ ./src/
 RUN pip install --no-cache-dir --prefix=/install .
 
 # ---------- runtime stage ----------
-FROM python:3.11.9-alpine3.20@sha256:43547ccd3cafdff532797cb4927e5e2b1b4fdb1204bfb0b06ae4e488cceb5ce5
+FROM python:3.11-alpine3.21@sha256:cc89153ee2e125296614f6a032cb473e2bc2c0203cbe2305c917ece8866e5b01
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 

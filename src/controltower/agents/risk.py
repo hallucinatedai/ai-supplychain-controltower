@@ -12,7 +12,6 @@ from controltower.models import (
     ShipmentStatus,
 )
 
-
 _HIGH_RISK_THRESHOLD = 0.7
 _MEDIUM_RISK_THRESHOLD = 0.4
 
@@ -38,8 +37,7 @@ class RiskAgent(BaseAgent):
                         priority=1,
                         title=f"High risk shipment: {shipment.id}",
                         description=(
-                            f"Risk score {score:.2f} for {shipment.origin} → "
-                            f"{shipment.destination}"
+                            f"Risk score {score:.2f} for {shipment.origin} → {shipment.destination}"
                         ),
                         action="Escalate to logistics manager and prepare contingency route",
                         confidence=min(score, 1.0),

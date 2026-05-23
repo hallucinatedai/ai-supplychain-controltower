@@ -22,6 +22,7 @@ def _now() -> datetime:
 # Enums
 # ---------------------------------------------------------------------------
 
+
 class ShipmentStatus(str, Enum):
     PENDING = "pending"
     IN_TRANSIT = "in_transit"
@@ -47,6 +48,7 @@ class AlertStatus(str, Enum):
 # ---------------------------------------------------------------------------
 # Core domain models
 # ---------------------------------------------------------------------------
+
 
 class Shipment(BaseModel):
     id: str = Field(default_factory=_default_id)
@@ -120,6 +122,7 @@ class Forecast(BaseModel):
 # ---------------------------------------------------------------------------
 # API request / response helpers
 # ---------------------------------------------------------------------------
+
 
 class OperationalEvent(BaseModel):
     event_type: str

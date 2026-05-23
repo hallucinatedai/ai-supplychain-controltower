@@ -39,9 +39,9 @@ class EscalationAgent(BaseAgent):
                 recommendations.append(
                     Recommendation(
                         agent=self.name,
-                        priority=1 if alert.severity in (
-                            AlertSeverity.CRITICAL, AlertSeverity.HIGH
-                        ) else 2,
+                        priority=1
+                        if alert.severity in (AlertSeverity.CRITICAL, AlertSeverity.HIGH)
+                        else 2,
                         title=alert.title,
                         description=alert.description,
                         action=alert.recommended_action,
@@ -67,8 +67,7 @@ class EscalationAgent(BaseAgent):
             return Alert(
                 title=f"Delayed shipment without ETA: {shipment.id}",
                 description=(
-                    f"Shipment {shipment.origin} → {shipment.destination}"
-                    " is delayed with no ETA"
+                    f"Shipment {shipment.origin} → {shipment.destination} is delayed with no ETA"
                 ),
                 severity=AlertSeverity.HIGH,
                 source_agent=self.name,
@@ -126,8 +125,7 @@ class EscalationAgent(BaseAgent):
                 priority=1,
                 title=f"Stale alert: {alert.title}",
                 description=(
-                    f"Alert has been {alert.status.value}"
-                    f" for {age.total_seconds() / 3600:.0f}h"
+                    f"Alert has been {alert.status.value} for {age.total_seconds() / 3600:.0f}h"
                 ),
                 action="Review and resolve or escalate",
                 confidence=0.85,
