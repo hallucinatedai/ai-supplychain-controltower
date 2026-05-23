@@ -15,7 +15,6 @@ from controltower.models import (
     ShipmentStatus,
 )
 
-
 _DELAY_HOURS_THRESHOLD = 24
 _CRITICAL_DELAY_HOURS = 48
 
@@ -40,9 +39,9 @@ class EscalationAgent(BaseAgent):
                 recommendations.append(
                     Recommendation(
                         agent=self.name,
-                        priority=1 if alert.severity in (
-                            AlertSeverity.CRITICAL, AlertSeverity.HIGH
-                        ) else 2,
+                        priority=1
+                        if alert.severity in (AlertSeverity.CRITICAL, AlertSeverity.HIGH)
+                        else 2,
                         title=alert.title,
                         description=alert.description,
                         action=alert.recommended_action,
@@ -67,7 +66,9 @@ class EscalationAgent(BaseAgent):
         if not shipment.estimated_arrival:
             return Alert(
                 title=f"Delayed shipment without ETA: {shipment.id}",
-                description=f"Shipment {shipment.origin} → {shipment.destination} is delayed with no ETA",
+                description=(
+                    f"Shipment {shipment.origin} → {shipment.destination} is delayed with no ETA"
+                ),
                 severity=AlertSeverity.HIGH,
                 source_agent=self.name,
                 related_entity_id=shipment.id,
@@ -123,7 +124,9 @@ class EscalationAgent(BaseAgent):
                 agent=self.name,
                 priority=1,
                 title=f"Stale alert: {alert.title}",
-                description=f"Alert has been {alert.status.value} for {age.total_seconds() / 3600:.0f}h",
+                description=(
+                    f"Alert has been {alert.status.value} for {age.total_seconds() / 3600:.0f}h"
+                ),
                 action="Review and resolve or escalate",
                 confidence=0.85,
                 metadata={"alert_id": alert.id},

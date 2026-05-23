@@ -136,11 +136,18 @@ class DataStore:
                 created_at,updated_at,metadata)
                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             (
-                s.id, s.origin, s.destination, s.status.value,
-                s.carrier, s.weight_kg,
-                _dt_to_str(s.estimated_arrival), _dt_to_str(s.actual_arrival),
-                s.route_id, s.risk_score,
-                _dt_to_str(s.created_at), _dt_to_str(s.updated_at),
+                s.id,
+                s.origin,
+                s.destination,
+                s.status.value,
+                s.carrier,
+                s.weight_kg,
+                _dt_to_str(s.estimated_arrival),
+                _dt_to_str(s.actual_arrival),
+                s.route_id,
+                s.risk_score,
+                _dt_to_str(s.created_at),
+                _dt_to_str(s.updated_at),
                 json.dumps(s.metadata),
             ),
         )
@@ -148,9 +155,7 @@ class DataStore:
         return s
 
     def get_shipment(self, shipment_id: str) -> Shipment | None:
-        row = self.conn.execute(
-            "SELECT * FROM shipments WHERE id=?", (shipment_id,)
-        ).fetchone()
+        row = self.conn.execute("SELECT * FROM shipments WHERE id=?", (shipment_id,)).fetchone()
         if not row:
             return None
         return self._row_to_shipment(row)
@@ -162,9 +167,7 @@ class DataStore:
                 (status.value,),
             ).fetchall()
         else:
-            rows = self.conn.execute(
-                "SELECT * FROM shipments ORDER BY updated_at DESC"
-            ).fetchall()
+            rows = self.conn.execute("SELECT * FROM shipments ORDER BY updated_at DESC").fetchall()
         return [self._row_to_shipment(r) for r in rows]
 
     @staticmethod
@@ -194,10 +197,16 @@ class DataStore:
                 unit_cost,last_replenished,created_at,updated_at,metadata)
                VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
             (
-                inv.id, inv.sku, inv.warehouse, inv.quantity,
-                inv.reorder_point, inv.reorder_qty, inv.unit_cost,
+                inv.id,
+                inv.sku,
+                inv.warehouse,
+                inv.quantity,
+                inv.reorder_point,
+                inv.reorder_qty,
+                inv.unit_cost,
                 _dt_to_str(inv.last_replenished),
-                _dt_to_str(inv.created_at), _dt_to_str(inv.updated_at),
+                _dt_to_str(inv.created_at),
+                _dt_to_str(inv.updated_at),
                 json.dumps(inv.metadata),
             ),
         )
@@ -205,9 +214,7 @@ class DataStore:
         return inv
 
     def get_inventory(self, inventory_id: str) -> Inventory | None:
-        row = self.conn.execute(
-            "SELECT * FROM inventory WHERE id=?", (inventory_id,)
-        ).fetchone()
+        row = self.conn.execute("SELECT * FROM inventory WHERE id=?", (inventory_id,)).fetchone()
         if not row:
             return None
         return self._row_to_inventory(row)
@@ -219,9 +226,7 @@ class DataStore:
                 (warehouse,),
             ).fetchall()
         else:
-            rows = self.conn.execute(
-                "SELECT * FROM inventory ORDER BY sku"
-            ).fetchall()
+            rows = self.conn.execute("SELECT * FROM inventory ORDER BY sku").fetchall()
         return [self._row_to_inventory(r) for r in rows]
 
     @staticmethod
@@ -249,10 +254,16 @@ class DataStore:
                 cost,risk_score,is_active,created_at,metadata)
                VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
             (
-                r.id, r.origin, r.destination,
-                json.dumps(r.waypoints), r.distance_km,
-                r.estimated_hours, r.cost, r.risk_score,
-                int(r.is_active), _dt_to_str(r.created_at),
+                r.id,
+                r.origin,
+                r.destination,
+                json.dumps(r.waypoints),
+                r.distance_km,
+                r.estimated_hours,
+                r.cost,
+                r.risk_score,
+                int(r.is_active),
+                _dt_to_str(r.created_at),
                 json.dumps(r.metadata),
             ),
         )
@@ -260,9 +271,7 @@ class DataStore:
         return r
 
     def get_route(self, route_id: str) -> Route | None:
-        row = self.conn.execute(
-            "SELECT * FROM routes WHERE id=?", (route_id,)
-        ).fetchone()
+        row = self.conn.execute("SELECT * FROM routes WHERE id=?", (route_id,)).fetchone()
         if not row:
             return None
         return self._row_to_route(row)
@@ -273,9 +282,7 @@ class DataStore:
                 "SELECT * FROM routes WHERE is_active=1 ORDER BY origin"
             ).fetchall()
         else:
-            rows = self.conn.execute(
-                "SELECT * FROM routes ORDER BY origin"
-            ).fetchall()
+            rows = self.conn.execute("SELECT * FROM routes ORDER BY origin").fetchall()
         return [self._row_to_route(r) for r in rows]
 
     @staticmethod
@@ -304,10 +311,17 @@ class DataStore:
                 resolved_at,metadata)
                VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
             (
-                a.id, a.title, a.description, a.severity.value,
-                a.status.value, a.source_agent, a.related_entity_id,
-                a.recommended_action, _dt_to_str(a.created_at),
-                _dt_to_str(a.resolved_at), json.dumps(a.metadata),
+                a.id,
+                a.title,
+                a.description,
+                a.severity.value,
+                a.status.value,
+                a.source_agent,
+                a.related_entity_id,
+                a.recommended_action,
+                _dt_to_str(a.created_at),
+                _dt_to_str(a.resolved_at),
+                json.dumps(a.metadata),
             ),
         )
         self.conn.commit()
@@ -358,9 +372,14 @@ class DataStore:
                 generated_at,metadata)
                VALUES (?,?,?,?,?,?,?,?)""",
             (
-                f.id, f.target, f.metric, f.horizon_days,
-                json.dumps(f.values), f.confidence,
-                _dt_to_str(f.generated_at), json.dumps(f.metadata),
+                f.id,
+                f.target,
+                f.metric,
+                f.horizon_days,
+                json.dumps(f.values),
+                f.confidence,
+                _dt_to_str(f.generated_at),
+                json.dumps(f.metadata),
             ),
         )
         self.conn.commit()

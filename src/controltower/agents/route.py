@@ -79,9 +79,7 @@ class RouteAgent(BaseAgent):
             candidates = [
                 r
                 for r in routes
-                if r.origin == origin
-                and r.destination == destination
-                and r.is_active
+                if r.origin == origin and r.destination == destination and r.is_active
             ]
         if not candidates:
             return None
@@ -91,11 +89,7 @@ class RouteAgent(BaseAgent):
     @staticmethod
     def _route_score(route: Route) -> float:
         """Lower is better. Combines cost, time, and risk."""
-        return (
-            route.cost * 0.3
-            + route.estimated_hours * 0.3
-            + route.risk_score * 100 * 0.4
-        )
+        return route.cost * 0.3 + route.estimated_hours * 0.3 + route.risk_score * 100 * 0.4
 
     def rank_routes(self, routes: list[Route]) -> list[Route]:
         """Return routes sorted best-first."""
